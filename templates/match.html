@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>result</title>
+        <style>
+            .header{
+                text-align:center;
+            }
+            .container
+            {
+              display:flex;
+              
+            }
+            .container1
+            {
+              display:flex;
+            }
+            .container-ele{
+                height:50px;
+                width:50%;
+                border-radius:20px;
+                background-color:red;
+                margin-left:20px;
+                color:lightblue;
+                text-align:center;
+            }
+            .container-img{
+                height:400px;
+                margin-left:20px;
+                margin-top:20px;
+                width:50%;
+                border-radius:20px;
+                background-color:lightblue;
+                text-align:center;
+            }
+            .results {
+                margin-left:600px;
+                margin-top:10px;
+                border-radius:20px;
+                height:100px;
+                width:300px;
+                 
+              }
+              .center{
+                margin-top:20px;
+                margin-left:30px;
+              }
+        </style>
+    </head>
+    <body>
+         <h1 class="header">Your Results</h1>
+         <div class="container">
+            <div class="container-ele">
+                 <h2>Your Adhar image</h2>
+            </div>
+            <div class="container-ele">
+                <h2>Your Live detection image</h2>
+            </div>
+         </div> 
+         <div class="container1">
+            <div class="container-img">
+                  <img style="height:300px;width:300px;margin-top:20px;" src="static/images/faces/image.jpeg"/>
+            </div>
+            <div class="container-img">
+                <img style="height:300px;width:400px;margin-top:20px;" src="static/images/faces/real.jpg"/>
+            </div>
+         </div> 
+         <div class='results'>
+            <div class="center">
+              <h4 > Result : {{result}} </h4>
+              <h4 > Percentage: {{per}} </h4>
+            </div>
+        </div>
+    </body>
+</html>

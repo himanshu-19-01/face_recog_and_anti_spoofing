@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Video Streaming Demonstration</title>
+    <style>
+      .container {
+        display: flex;
+        margin: 10px;
+      }
+    
+    
+      #video-stream {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: auto;
+      }
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+      }
+      #loading .loader {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.5);
+        border-top-color: #fff;
+        animation: spin 1s infinite linear;
+      }
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+        .header {
+        height: 150px;
+        border-radius: 10px;
+        margin-left:40px;
+        margin-right:50px;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        background-color: cream;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }  
+
+      
+    
+    </style>
+   
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include SweetAlert2 script and styles -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+   
+  </head>
+  <body>
+    <div id="header" class="header">
+      <h1 style="text-align: center;">Do You want to start the process?</h1>
+      <h3 style="text-align: center;">Click Start process after reading the instructions..</h3>
+    </div>
+    <h3 id='tag' style="text-align: center;display:none;"> Position yourself facing the camera directly </h3>
+    <div class="container" id="container">
+      <div id="inst" style="height: 500px; width: 1000px;margin-left:30px;border-radius:20px;margin-top:50px;background-color:lightgreen;display:block">
+        <h1 style="margin-left:30px;">Please Read the Following Instructions Carefully...</h1>
+        <ul>
+          <li style="margin-left:20px;margin-right:10px;">Ensure Sufficient Lighting: Make sure the area where you capture the image has adequate lighting. Avoid extreme shadows or harsh lighting conditions that could impact the quality of the image.</li></br>
+          <li style="margin-left:20px;margin-right:10px;">Face Visibility:Position yourself facing the camera directly, with your entire face visible. Avoid tilting your head or covering any part of your face with objects like sunglasses, hats, or scarves.</li></br>
+          <li style="margin-left:20px;margin-right:10px;">Remove Obstructions: Ensure that your hair, especially bangs, does not cover your forehead or eyes, as it can interfere with accurate face recognition. Push your hair back if needed.</li></br>
+          <li  style="margin-left:20px;margin-right:10px;">Minimal Background Distractions: Choose a plain and uncluttered background to avoid any distractions that could divert attention from your face. A solid-colored wall or a simple background works well.</li></br>
+          <li style="margin-left:20px;margin-right:10px;">Remove Glasses or Adjust Them Properly: If you wear glasses, it is generally recommended to remove them for face matching. However, if you prefer to keep them on, make sure they do not obstruct your eyes or cause any glare.</li></br>
+        </ul>
+        <h3 style="margin-left:40px;margin-right:10px;">Remember, following these instructions can improve the quality and reliability of face matching results.</h3>
+        <button   
+                    id="startbtn"
+                    style="position:absolute;left:850px;background-color:#87CEFA;border-color:#87CEFA;height:50px;width:100px;border-radius:10px;"
+                    onmouseover="this.style.backgroundColor='#ADD8E6';this.style.borderColor='#ADD8E6'"
+                    onmouseout="this.style.backgroundColor='#87CEFA';this.style.borderColor='#87CEFA'"
+                    onclick=showVideo()>Start Process</button>
+         
+      </div>
+      <div id="image" style="width: 350px; height: 500px;margin-left:20px;border-radius:10px;background-color:lightblue;margin-top:50px;display:block;">
+        <img style="height:400px;width:300px;margin-top:50px;margin-left:20px;" src="static/images/hero-section-2f05cdf1.jpg" />
+      </div>
+    </div>
+    
+
+     
+
+    
+
+    <div class="col-6 offset-3 text-center">
+     
+                    <form id="form" style="display:none" method="post" action="{{ url_for('capture_image') }}">
+                      <input style="position:absolute;top:650px;left:700px;background-color:#87CEFA;border-color:#87CEFA;height:40px;width:100px;border-radius:10px;" type="submit" value="Capture Image">
+                    </form>                             
+    </div>
+    <div id="loading" style="display:none;">
+      <div class="loader"></div>
+    </div>
+    <script>
+      const form = document.getElementById('form');
+     
+      function showVideo() {
+        var loadingDiv = document.getElementById("loading");
+        document.getElementById("startbtn").style.display="none";
+        document.getElementById("inst").style.display="none";
+        document.getElementById("image").style.display="none";
+        document.getElementById("header").style.display="none";
+        document.getElementById("tag").style.display="block";
+        loadingDiv.style.display = "flex";
+        var imgTag = document.createElement("img");
+        imgTag.id = "video-stream";
+        imgTag.style.display = "block";
+        imgTag.src = "{{ url_for('video_feed') }}";
+        imgTag.onload = function() {
+          loadingDiv.style.display = "none";
+          form.style.display = 'block';
+          
+        };
+        document.body.appendChild(imgTag);
+      }
+     
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+      
+        // send a POST request to the server
+        fetch('/capture_image', {method: 'POST'})
+          .then(response => response.text())
+          .catch(error => console.error('Error:', error));
+        
+        Swal.fire({
+          title: 'Capture successful',
+          text: '',
+          icon: 'success',
+          confirmButtonText: 'Continue'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = "/live_detection";
+            form.style.display = 'none';
+            capturebtn.style.display = 'block';
+            video.srcObject = null;
+          }
+        });
+      }); 
+      
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    integrity="sha384-eaxJyPq6r1t6T/D1KgzAuY7jxgP8QJFrNLgU0oZrR7Xou1d/ozUZCvPFjL9Pw9k4"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+V4QwFkOm5uH7oI7UksdQRVvoxMfoo/"
+    crossorigin="anonymous"></script>
+  </body>
+</html>
+
+
+
+ 

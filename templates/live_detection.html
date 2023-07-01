@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+         <title>live detection </title>
+         
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Include SweetAlert2 script and styles -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        #video-stream {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+          }
+          #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+          }
+          #loading .loader {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.5);
+            border-top-color: #fff;
+            animation: spin 1s infinite linear;
+          }
+          @keyframes spin {
+            from {
+              transform: rotate(0deg);
+            }
+            to {
+              transform: rotate(360deg);
+            }
+          }
+      
+            @media (max-width: 768px) {
+              #continue {
+                width: 80px;
+                height: 30px;
+              }
+            }
+           
+          
+    </style>
+    </head>
+    <body>
+       <h1 style="text-align:center;">Liveness Detection</h1>
+       <h3 style="text-align:center;">Are you ready ?  Press Continue !</h3>
+       <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        <button class="btn btn-primary rounded-pill"
+                id="continue"
+                style="background-color:#87CEFA; border-color:#87CEFA; height:40px; width:100px; border-radius:10px;"
+                onmouseover="this.style.backgroundColor='#ADD8E6'; this.style.borderColor='#ADD8E6'"
+                onmouseout="this.style.backgroundColor='#87CEFA'; this.style.borderColor='#87CEFA'"
+                onclick=livestream()>
+          Continue
+        </button>
+        <button  
+        id="Restart"
+        style="position:absolute;top:650px;left:700px;background-color:#87CEFA;border-color:#87CEFA;height:40px;width:100px;border-radius:10px;display:none;"
+        onmouseover="this.style.backgroundColor='#ADD8E6'; this.style.borderColor='#ADD8E6'"
+        onmouseout="this.style.backgroundColor='#87CEFA'; this.style.borderColor='#87CEFA'"
+        onclick="window.location.href='/verify'">
+  show Results
+</button>
+      </div>
+      
+
+       <div id="loading" style="display:none;">
+        <div class="loader"></div>
+      </div>
+        
+        <script>
+            function livestream()
+            {
+              var loadingDiv = document.getElementById("loading");
+              document.getElementById("continue").style.display="none";
+              document.getElementById("Restart").style.display="block";
+              loadingDiv.style.display = "flex";
+              var imgTag = document.createElement("img");
+              imgTag.id = "video-stream";
+              imgTag.style.display = "block";
+              imgTag.src = "{{ url_for('video') }}";
+              imgTag.onload = function() {
+              loadingDiv.style.display = "none";
+              };
+              document.body.appendChild(imgTag); 
+            }
+        </script>
+    </body>
+</html>
